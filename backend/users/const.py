@@ -1,9 +1,6 @@
-USER = 'user'
-MODERATOR = 'moderator'
-ADMIN = 'admin'
-ROLES = ((USER, 'User'), (MODERATOR, 'Moderator'), (ADMIN, 'Admin'),)
 SYMBOLS_254 = 254
 SYMBOLS_150 = 150
+SYMBOLS_200 = 200
 SYMBOLS_MESSAGE = 'Количество символов не должно превышать'
 USERNAME_REGEX = r'^[\w.@+-]+$'
 NOT_ALLOWED_CHAR_MSG = 'Запрещенный символ - {chars} в {username}.'

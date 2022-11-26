@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Subscribe, User
+from .models import User
 
 
 @admin.register(User)
@@ -13,16 +13,8 @@ class UserAdmin(admin.ModelAdmin):
         'username',
         'first_name',
         'last_name',
-        'role'
     )
-    search_fields = ('username', 'role',)
-    list_filter = ('email', 'username',)
 
-
-@admin.register(Subscribe)
-class SubscribeAdmin(admin.ModelAdmin):
-    """Регистрация модели Subscribe в интерфейсе администратора."""
-
-    list_display = ('id', 'user', 'author')
-    search_fields = ('user',)
-    list_filter = ('user', )
+    empty_value_display = 'Значение отсутствует'
+    search_fields = ('username', 'email',)
+    list_filter = ('username', 'email',)
