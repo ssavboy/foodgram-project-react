@@ -1,5 +1,4 @@
 from django.db.models import F, Sum
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
@@ -146,9 +145,4 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ).annotate(amount=Sum('amount')).values_list(
             'ingredient__name', 'amount', 'ingredient__measurement_unit'
         )
-        response = HttpResponse(content_type='text/plain')
-        response['Content-Disposition'] = 'attachment; filename="ingredients.txt"'
-        response.write(table_recipes(shopping_list))
-        data_model = ShoppingList.objects.filter(user=request.user.id)
-        data_model.delete()
-        return response
+        table_recipes(shopping_list)

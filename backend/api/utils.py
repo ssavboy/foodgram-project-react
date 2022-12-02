@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from prettytable import PrettyTable
 
 
@@ -12,4 +13,7 @@ def table_recipes(ingredients):
             i['ingredient__measurement_unit'],
             i['amount'],
         ])
-    return table.get_string()
+    response = HttpResponse(content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename="ingredients.txt"'
+    response.write(table.get_string())
+    return response
