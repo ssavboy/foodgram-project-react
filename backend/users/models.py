@@ -33,6 +33,8 @@ class User(AbstractUser):
         max_length=SYMBOLS_150,
         help_text=f'{SYMBOLS_MESSAGE} {SYMBOLS_150}.'
     )
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     class Meta:
         verbose_name = 'Пользователь'

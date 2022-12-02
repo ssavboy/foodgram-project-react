@@ -42,6 +42,13 @@ class RecipeAdmin(admin.ModelAdmin):
 
     get_tags.short_description = 'Тег или список тегов'
 
+    def get_igredients(self, obj):
+        return '\n'.join(
+            (ingredient.name for ingredient in obj.ingredient.all())
+        )
+
+    get_igredients.short_description = 'Ингридиенты'
+
 
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
