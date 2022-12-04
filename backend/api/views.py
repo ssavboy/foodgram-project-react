@@ -25,38 +25,55 @@ class CustomUserViewSet(UserViewSet):
     serializer_class = CustomUserSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-    @action(methods=['get'], detail=False)
+    @action(
+        detail=False,
+        permission_classes=(IsAuthenticated, )
+    )
     def subscriptions(self, request):
-        subscriptions_list = self.paginate_queryset(
-            User.objects.filter(following__user=request.user)
-        )
-        serializer = FollowSerializer(
-            subscriptions_list, many=True, context={
-                'request': request
-            }
-        )
-        return self.get_paginated_response(serializer.data)
+        queryset = User.objects.filter(follow__user=request.user)
+        if queryset:
+            pages = self.paginate_queryset(queryset)
+            serializer = FollowSerializer(pages, many=True,
+                                          context={'request': request})
+            return self.get_paginated_response(serializer.data)
+        return Response('Вы ни на кого не подписаны.',
+                        status=status.HTTP_400_BAD_REQUEST)
 
-    @action(methods=['post', 'delete'], detail=True)
+    @action(
+        detail=True,
+        methods=('post',),
+        permission_classes=(IsAuthenticated,)
+    )
     def subscribe(self, request, id):
-        if request.method != 'POST':
-            subscription = get_object_or_404(
-                Follow,
-                author=get_object_or_404(User, id=id),
-                user=request.user
-            )
-            self.perform_destroy(subscription)
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        serializer = FollowSerializer(
-            data={
-                'user': request.user.id,
-                'author': get_object_or_404(User, id=id).id
-            },
-            context={'request': request}
+        user = request.user
+        author = get_object_or_404(User, id=id)
+        subscription = Follow.objects.filter(
+            user=user.id, author=author.id
         )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if user == author:
+            return Response('На себя подписываться нельзя!',
+                            status=status.HTTP_400_BAD_REQUEST)
+        if subscription.exists():
+            return Response(f'Вы уже подписаны на {author}',
+                            status=status.HTTP_400_BAD_REQUEST)
+        subscribe = Follow.objects.create(
+            user=user,
+            author=author
+        )
+        subscribe.save()
+        return Response(f'Вы подписались на {author}',
+                        status=status.HTTP_201_CREATED)
+
+    @subscribe.mapping.delete
+    def delete_subscribe(self, request, id):
+        user = request.user
+        author = get_object_or_404(User, id=id)
+        change_subscription = Follow.objects.filter(
+            user=user.id, author=author.id
+        )
+        change_subscription.delete()
+        return Response(f'Вы больше не подписаны на {author}',
+                        status=status.HTTP_204_NO_CONTENT)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -138,11 +155,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def download_shopping_cart(self, request):
         shopping_list = IngredientRecipe.objects.filter(
-            recipe__cart__user=request.user
+            recipe__shopping_list__user=request.user
         ).values(
             name=F('ingredient__name'),
             measurement_unit=F('ingredient__measurement_unit')
-        ).annotate(amount=Sum('amount')).values_list(
-            'ingredient__name', 'amount', 'ingredient__measurement_unit'
+        ).annotate(ingredient_amount=Sum('amount')).values_list(
+            'ingredient__name',
+            'ingredient_amount',
+            'ingredient__measurement_unit'
         )
-        table_recipes(shopping_list)
+        return table_recipes(shopping_list)

@@ -3,7 +3,7 @@ from recipes.models import Ingredient, Recipe, Tag
 
 FILTER_USER = {
     'favorites': 'favorites__user',
-    'shop_list': 'shop_list__user'
+    'shop_list': 'shopping_list__user'
 }
 
 

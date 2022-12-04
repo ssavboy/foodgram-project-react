@@ -201,7 +201,7 @@ class ShoppingList(BaseClassForFavoriteAndShopping):
     class Meta(BaseClassForFavoriteAndShopping.Meta):
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Список покупок'
-        default_related_name = 'shop_list'
+        default_related_name = 'shopping_list'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'recipe'], name='unique_shoppingList'
