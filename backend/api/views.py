@@ -8,9 +8,10 @@ from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
-from users.models import User
 from recipes.models import (Favorite, Follow, Ingredient, IngredientRecipe,
                             Recipe, ShoppingList, Tag)
+from users.models import User
+
 from .filters import IngredientSearchFilter, RecipeFilter
 from .permissions import IsAuthorOrReadOnlyPermission
 from .serializers import (CustomUserSerializer, FavoriteSerializer,
@@ -33,11 +34,16 @@ class CustomUserViewSet(UserViewSet):
         queryset = User.objects.filter(follow__user=request.user)
         if queryset:
             pages = self.paginate_queryset(queryset)
-            serializer = FollowSerializer(pages, many=True,
-                                          context={'request': request})
+            serializer = FollowSerializer(
+                pages,
+                many=True,
+                context={'request': request}
+            )
             return self.get_paginated_response(serializer.data)
-        return Response('Вы ни на кого не подписаны.',
-                        status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            'Вы ни на кого не подписаны.',
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     @action(
         detail=True,
@@ -47,15 +53,17 @@ class CustomUserViewSet(UserViewSet):
     def subscribe(self, request, id):
         user = request.user
         author = get_object_or_404(User, id=id)
-        subscription = Follow.objects.filter(
-            user=user.id, author=author.id
-        )
+        subscription = author.follow.filter(user=user)
+
         if user == author:
-            return Response('На себя подписываться нельзя!',
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                'На себя подписываться нельзя!',
+                status=status.HTTP_400_BAD_REQUEST)
         if subscription.exists():
-            return Response(f'Вы уже подписаны на {author}',
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                f'Вы уже подписаны на {author}',
+                status=status.HTTP_400_BAD_REQUEST
+            )
         subscribe = Follow.objects.create(
             user=user,
             author=author
@@ -66,14 +74,12 @@ class CustomUserViewSet(UserViewSet):
 
     @subscribe.mapping.delete
     def delete_subscribe(self, request, id):
-        user = request.user
         author = get_object_or_404(User, id=id)
-        change_subscription = Follow.objects.filter(
-            user=user.id, author=author.id
+        author.follow.filter(user=request.user).delete()
+        return Response(
+            f'Вы больше не подписаны на {author}',
+            status=status.HTTP_204_NO_CONTENT
         )
-        change_subscription.delete()
-        return Response(f'Вы больше не подписаны на {author}',
-                        status=status.HTTP_204_NO_CONTENT)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -114,10 +120,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @staticmethod
     def delete_object(request, pk, model):
-        user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
-        model_instance = get_object_or_404(model, user=user, recipe=recipe)
-        model_instance.delete()
+        get_object_or_404(model, user=request.user, recipe=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def _create_or_destroy(self, http_method, recipe, key, model, serializer):
@@ -159,9 +163,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ).values(
             name=F('ingredient__name'),
             measurement_unit=F('ingredient__measurement_unit')
-        ).annotate(ingredient_amount=Sum('amount')).values_list(
+        ).annotate(
+            ingredient_amount=Sum('amount')
+        ).values_list(
             'ingredient__name',
             'ingredient_amount',
             'ingredient__measurement_unit'
+        ).order_by(
+            'ingredient__name'
         )
         return table_recipes(shopping_list)
