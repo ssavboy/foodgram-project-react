@@ -69,17 +69,19 @@ class CustomUserViewSet(UserViewSet):
             author=author
         )
         subscribe.save()
-        return Response(f'Вы подписались на {author}',
-                        status=status.HTTP_201_CREATED)
+        return Response(
+            f'Вы подписались на {author}',
+            status=status.HTTP_201_CREATED
+        )
 
     @subscribe.mapping.delete
     def delete_subscribe(self, request, id):
-        author = get_object_or_404(User, id=id)
-        author.follow.filter(user=request.user).delete()
-        return Response(
-            f'Вы больше не подписаны на {author}',
-            status=status.HTTP_204_NO_CONTENT
-        )
+        get_object_or_404(
+            Follow,
+            user=request.user,
+            author=get_object_or_404(User, id=id)
+        ).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -120,8 +122,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @staticmethod
     def delete_object(request, pk, model):
-        recipe = get_object_or_404(Recipe, id=pk)
-        get_object_or_404(model, user=request.user, recipe=recipe).delete()
+        get_object_or_404(
+            model,
+            user=request.user,
+            recipe=get_object_or_404(Recipe, id=pk)
+        ).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def _create_or_destroy(self, http_method, recipe, key, model, serializer):
