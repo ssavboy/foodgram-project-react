@@ -11,7 +11,7 @@ services:
       - ./.env
 
   backend:
-    image: ssavboy/backend_foodgram:v1.0
+    image: ssavboy/backend_foodgram:latest
     restart: always
     ports:
      - "8000:8000"
