@@ -6,7 +6,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='secret_key_project')
 
 DEBUG = os.getenv('DEBUG', default=False)
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='127.0.0.1')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='*')
 
 LANGUAGE_CODE = 'ru-RU'
 
