@@ -20,7 +20,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install flake8 pep8-naming flake8-broken-line flake8-return flake8-isort
-          pip install -r ${{ secrets.PROJECT_FOLDER }}/requirements.txt
+          pip install -r backend/requirements.txt
       - name: Test with flake8
         run: |
           python -m flake8
@@ -42,8 +42,8 @@ jobs:
       - name: Push to Docker Hub
         uses: docker/build-push-action@v2
         with:
-          file: ${{ secrets.PROJECT_FOLDER }}/Dockerfile
-          context: ${{ secrets.PROJECT_FOLDER }}/
+          file: backend/Dockerfile
+          context: backend/
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REP }}
 
@@ -62,7 +62,7 @@ jobs:
           script: |
             sudo docker-compose stop
             sudo docker-compose rm web
-            sudo docker-compose pull ssavboy/gates
+            sudo docker-compose pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REP }}:v1.0
             touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_NAME=${{ secrets.DB_NAME }} >> .env
