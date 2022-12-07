@@ -2,11 +2,11 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get('SECRET_KEY', default='key')
+SECRET_KEY = '7(1*lk7khg6xe5%zvhvfjz)3xypttxx_dok17gd9ljd)ry-s*'
 
-DEBUG = os.environ.get('DEBUG', default=False)
+DEBUG = False
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', default='*')
+ALLOWED_HOSTS = ['*']
 
 LANGUAGE_CODE = 'ru-RU'
 
