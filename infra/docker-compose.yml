@@ -1,6 +1,6 @@
 version: '3.3'
 services:
-  
+
   db:
     image: postgres:13.0-alpine
     ports:
@@ -27,7 +27,7 @@ services:
     image: ssavboy/frontend_foodgram:v1.0
     volumes:
       - ../frontend/:/app/result_build/
-  
+
   nginx:
     image: nginx:1.19.3
     ports:
