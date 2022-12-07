@@ -1,4 +1,4 @@
-<!-- <img src="https://github.com/ssavboy/foodgram-project-react/actions/workflows/main.yml/badge.svg"> -->
+<img src="https://github.com/ssavboy/foodgram-project-react/actions/workflows/main.yml/badge.svg">
 
 # Foodgram
 <b>Foodgram, «Продуктовый помощник».</b>
@@ -20,9 +20,11 @@
 
 <b>Описание команд для запуска приложения в контейнерах</b>
 ```
-- docker-compose exec web python manage.py makemigrations users
-- docker-compose exec web python manage.py makemigrations reviews
+- docker-compose exec web python manage.py makemigrations users recipes
 - docker-compose exec web python manage.py migrate
 - docker-compose exec web python manage.py createsuperuser
+- docker-compose exec web python manage.py load_data
 - docker-compose exec web python manage.py collectstatic --no-input
 ```
+
+<b><a href='http://62.84.121.132/signin'>Ссылка на вход</a></b>
