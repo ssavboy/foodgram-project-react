@@ -43,7 +43,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           file: backend/Dockerfile
-          context: backend/
+          context: ./backend
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REP }}
 
@@ -61,7 +61,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             sudo docker-compose stop
-            sudo docker-compose rm web
+            sudo docker-compose rm backend
             sudo docker-compose pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REP }}:latest
             touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
