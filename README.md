@@ -1,4 +1,5 @@
-![image]({https://github.com/ssavboy/foodgram-project-react/actions/workflows/main.yml/badge.svg})
+<img src="https://github.com/ssavboy/foodgram-project-react/actions/workflows/main.yml/badge.svg">
+
 # Foodgram
 <b>Foodgram, «Продуктовый помощник».</b>
 
