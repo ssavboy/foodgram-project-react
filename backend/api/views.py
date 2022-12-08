@@ -8,10 +8,6 @@ from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
-from recipes.models import (Favorite, Follow, Ingredient, IngredientRecipe,
-                            Recipe, ShoppingList, Tag)
-from users.models import User
-
 from .filters import IngredientSearchFilter, RecipeFilter
 from .permissions import IsAuthorOrReadOnlyPermission
 from .serializers import (CustomUserSerializer, FavoriteSerializer,
@@ -19,6 +15,9 @@ from .serializers import (CustomUserSerializer, FavoriteSerializer,
                           RecipeCreateSerializer, RecipeSerializer,
                           ShoppingListSerializer, TagSerializer)
 from .utils import table_recipes
+from recipes.models import (Favorite, Follow, Ingredient, IngredientRecipe,
+                            Recipe, ShoppingList, Tag)
+from users.models import User
 
 
 class CustomUserViewSet(UserViewSet):

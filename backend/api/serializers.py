@@ -2,12 +2,11 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
+from .validators import (validate_cooking_time, validate_ingridients,
+                         validate_tags)
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingList, Tag)
 from users.models import User
-
-from .validators import (validate_cooking_time, validate_ingridients,
-                         validate_tags)
 
 
 class CustomUserSerializer(UserSerializer):

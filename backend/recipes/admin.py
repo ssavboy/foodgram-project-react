@@ -31,7 +31,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'author',
         'get_favorites',
         'get_tags',
-        'get_igredients',
+        'get_ingredients',
     )
     list_filter = ('author', 'name', 'tags')
     search_fields = ('name',)
@@ -49,12 +49,12 @@ class RecipeAdmin(admin.ModelAdmin):
 
     get_tags.short_description = 'Тег или список тегов'
 
-    def get_igredients(self, obj):
-        return '\n'.join(
-            (ingredient.name for ingredient in obj.ingredient.all())
+    def get_ingredients(self, obj):
+        return ', '.join(
+            (ingredient.name for ingredient in obj.ingredients.all())
         )
 
-    get_igredients.short_description = 'Ингридиенты'
+    get_ingredients.short_description = 'Ингридиенты'
 
 
 @admin.register(Follow)
