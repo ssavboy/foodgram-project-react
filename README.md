@@ -65,5 +65,5 @@ docker-compose exec web python manage.py collectstatic --no-input
 ```
 http://localhost/
 ```
-
-<b><a href='http://62.84.121.132/signin'>Ссылка на вход</a></b>
+### Ссылка на вход [Kirill Molchanov](http://62.84.121.132/signin)
+### Автор [Kirill Molchanov](https://github.com/ssavboy)
